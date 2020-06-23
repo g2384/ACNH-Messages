@@ -65,7 +65,6 @@
 </head>
 
 <body>
-    <button onclick="load('TalkNNpc_Museum');">Villagers in Museum</button>
     <button onclick="load('LayoutMsg');">Layout</button>
     <button onclick="load('Mail_NNpc');">Villager Mail</button>
     <button onclick="load('Mail_Rnd_Msg');">Random Mail</button>
@@ -88,11 +87,12 @@
     <button onclick="load('TalkNNpc_Quest');">Villager Quest</button>
     <button onclick="load('TalkNNpc_React');">Villager React</button>
     <button onclick="load('TalkNNpc_Rumor');">Villager Rumor</button>
+    <button onclick="load('TalkNNpc_Museum');">Villagers in Museum</button>
     <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>
     <div id='result'></div>
     <script>
         function load(file) {
-            $("div#result").html = "";
+            $("div#result").empty();
             $.getJSON("./msg/CNzh/" + file + ".json", function (obj) {
                 $.each(obj, function (key, value) {
                     var vk = value.Key;
@@ -130,21 +130,10 @@
             if (w.document.documentElement.className.indexOf("fonts-loaded") > -1) {
                 return;
             }
-            var fontA = new w.FontFaceObserver("Source Sans Pro", {
-                weight: 300
-            });
-
-            var fontB = new w.FontFaceObserver("Source Sans Pro", {
-                weight: 600
-            });
-
-            var fontC = new w.FontFaceObserver("Source Sans Pro", {
-                weight: 300,
-                style: "italic"
-            });
+            var fontA = new w.FontFaceObserver("s");
 
             w.Promise
-                .all([fontA.check(), fontB.check(), fontC.check()])
+                .all([fontA.check()])
                 .then(function () {
                     w.document.documentElement.className += " fonts-loaded";
                 });
