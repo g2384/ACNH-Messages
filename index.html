@@ -15,7 +15,7 @@
             $.getJSON("./msg/CNzh/TalkNNpc_Museum.json", function (obj) {
                 $.each(obj, function (key, value) {
                     for (var k in value) {
-                        $("ul").append("<li>" + key + ": " + value[key] + "</li>");
+                        $("ul").append("<li>" + k + ": " + value[k] + "</li>");
                     }
                 });
             });
