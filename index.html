@@ -53,6 +53,12 @@
         .fonts-loaded body {
             font-family: 's', sans-serif;
         }
+
+        .func {
+            display: inline-block;
+            background-color: #f2d0ff;
+            font-size: 0.7em;
+        }
     </style>
 </head>
 
@@ -98,6 +104,14 @@
                         .replace("KO_", "暴躁>")
                         .replace("AN_", "大姐姐>")
                         .replace("ZK_", "自恋>")
+                        .replace("BO", "悠闲>")
+                        .replace("HA", "运动>")
+                        .replace("FU", "普通>")
+                        .replace("GE", "元气>")
+                        .replace("OT", "成熟>")
+                        .replace("KO", "暴躁>")
+                        .replace("AN", "大姐姐>")
+                        .replace("ZK", "自恋>")
                         .replace("Bo_", "悠闲>")
                         .replace("Ha_", "运动>")
                         .replace("Fu_", "普通>")
@@ -111,7 +125,7 @@
                     $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
                     var v = value.Value;
                     for (var k in v) {
-                        $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" + v[k].replace('\r\n', '<br>') + "</div></li>");
+                        $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" + v[k].replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>").replace('\r\n', '<br>') + "</div></li>");
                     }
                 });
             });
