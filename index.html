@@ -126,7 +126,10 @@
                     $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
                     var v = value.Value;
                     for (var k in v) {
-                        $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" + v[k].replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>").replace('\r\n', '<br>') + "</div></li>");
+                        $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" +
+                            v[k].replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
+                                .replace("func(110, 6, 92, 48)", "口头禅")
+                                .replace('\r\n', '<br>') + "</div></li>");
                     }
                 });
             });
