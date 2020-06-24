@@ -155,7 +155,7 @@
                                 .replace("func(110, 34, 92, 48)", "岛名")
                                 .replace("func(110, 1)", "玩家名")
                                 .replace("func(110, 1, 92, 48)", "玩家名")
-                                .replace("func(110, 3)", "玩家昵称")
+                                .replace(/func\(110, 3(, 92, 48)?\)/g, "玩家昵称")
                                 .replace(/func\(110, 4(, 92, 48)?\)/g, "玩家昵称<span class='unsure'>?</span>")
                                 .replace("func(110, 13, 10)", "村民名")
                                 .replace("func(110, 10)", "村民名<span class='unsure'>?</span>")
