@@ -126,6 +126,10 @@
                         .replace("Ko_", "暴躁>")
                         .replace("An_", "大姐姐>")
                         .replace("Zk_", "自恋>")
+                        .replace("RND_MsgA_", "回礼物1>")
+                        .replace("RND_MsgB_", "回礼物2>")
+                        .replace("RND_MsgC_", "回信>")
+                        .replace("RND_MsgD_", "赠送DIY>")
                         .replace("Spot_Museum_", "博物馆>")
                         .replace("Spot_", "地点>");
                     $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
@@ -136,6 +140,10 @@
                                 .replace("func(110, 6, 92, 48)", "口头禅<span class='unsure'>?</span>")
                                 .replace("func(110, 5, 92, 48)", "口头禅")
                                 .replace("func(110, 32, 92, 48)", "岛名")
+                                .replace("func(110, 3)", "玩家昵称")
+                                .replace("func(110, 4)", "玩家昵称<span class='unsure'>?</span>")
+                                .replace("func(110, 13, 10)", "村民名")
+                                .replace("func(110, 13, 10, 92, 48)", "村民名<span class='unsure'>?</span>")
                                 .replace(/func\(40, \d+, 4, 52480, 92, 48\)/g, "")
                                 .replace('\r\n', '<br>') + "</div></li>");
                     }
