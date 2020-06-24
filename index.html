@@ -146,8 +146,8 @@
                             v[k]
                                 .replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/g, "")
                                 .replace(/func\(40, [\d ,]+\)/g, "")
-                                .replace("func(92, 48, 3, 2, 1)", "<span class='ib color1'>")
-                                .replace("func(92, 48, 3, 2, 65535)", "</span>")
+                                .replace(/func\(92, 48, 3, 2, 1\)/g, "<span class='ib color1'>")
+                                .replace(/func\(92, 48, 3, 2, 65535\)/g, "</span>")
                                 .replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
                                 .replace("func(110, 6, 92, 48)", "口头禅<span class='unsure'>?</span>")
                                 .replace("func(110, 5, 92, 48)", "口头禅")
