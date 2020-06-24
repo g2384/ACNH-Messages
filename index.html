@@ -144,7 +144,7 @@
                     for (var k in v) {
                         $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" +
                             v[k]
-                                .replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/, "")
+                                .replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/g, "")
                                 .replace(/func\(40, [\d ,]+\)/g, "")
                                 .replace("func(92, 48, 3, 2, 1)", "<span class='ib color1'>")
                                 .replace("func(92, 48, 3, 2, 65535)", "</span>")
