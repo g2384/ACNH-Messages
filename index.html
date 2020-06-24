@@ -64,6 +64,14 @@
             font-size: 0.6em;
             color: #ff0000
         }
+
+        .ib {
+            display: inline-block;
+        }
+
+        .color1{
+            color:rgb(0, 119, 255);
+        }
     </style>
 </head>
 
@@ -136,15 +144,20 @@
                     var v = value.Value;
                     for (var k in v) {
                         $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" +
-                            v[k].replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
+                            v[k]
+                                .replace("func(13, 10, 2, 92, 48)", "")
+                                .replace(/func\(40, \d+, 4, 52480, 92, 48\)/g, "")
+                                .replace("func(92, 48, 3, 2, 1)", "<span class='ib color1'>")
+                                .replace("func(92, 48, 3, 2, 65535)", "</span>")
+                                .replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
                                 .replace("func(110, 6, 92, 48)", "口头禅<span class='unsure'>?</span>")
                                 .replace("func(110, 5, 92, 48)", "口头禅")
                                 .replace("func(110, 32, 92, 48)", "岛名")
                                 .replace("func(110, 3)", "玩家昵称")
                                 .replace("func(110, 4)", "玩家昵称<span class='unsure'>?</span>")
+                                .replace("func(110, 4, 92, 48)", "玩家昵称<span class='unsure'>?</span>")
                                 .replace("func(110, 13, 10)", "村民名")
                                 .replace("func(110, 13, 10, 92, 48)", "村民名<span class='unsure'>?</span>")
-                                .replace(/func\(40, \d+, 4, 52480, 92, 48\)/g, "")
                                 .replace('\r\n', '<br>') + "</div></li>");
                     }
                 });
