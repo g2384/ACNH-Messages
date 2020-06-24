@@ -152,10 +152,11 @@
                                 .replace("func(110, 6, 92, 48)", "口头禅<span class='unsure'>?</span>")
                                 .replace("func(110, 5, 92, 48)", "口头禅")
                                 .replace("func(110, 32, 92, 48)", "岛名")
+                                .replace("func(110, 34, 92, 48)", "岛名")
+                                .replace("func(110, 1)", "玩家名")
                                 .replace("func(110, 1, 92, 48)", "玩家名")
                                 .replace("func(110, 3)", "玩家昵称")
-                                .replace("func(110, 4)", "玩家昵称<span class='unsure'>?</span>")
-                                .replace("func(110, 4, 92, 48)", "玩家昵称<span class='unsure'>?</span>")
+                                .replace(/func\(110, 4(, 92, 48)?\)/g, "玩家昵称<span class='unsure'>?</span>")
                                 .replace("func(110, 13, 10)", "村民名")
                                 .replace("func(110, 10)", "村民名<span class='unsure'>?</span>")
                                 .replace("func(110, 10, 92, 48)", "村民名<span class='unsure'>?</span>")
@@ -166,7 +167,7 @@
                                 .replace("func(90, 21, 2, 4)", "铃钱")
                                 .replace("func(90, 21, 2, 92, 48)", "铃钱")
                                 .replace("func(90, 27, 92, 48)", "年份")
-                                .replace('\r\n', '<br>') + "</div></li>");
+                                .replace(/\r\n/g, '<br>') + "</div></li>");
                     }
                 });
             });
