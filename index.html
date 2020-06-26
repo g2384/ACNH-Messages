@@ -256,18 +256,19 @@
                 }
             });
 
+            var total = 0;
             $.each(json_obj, function (key, value) {
                 var vk = value.Key;
                 var matched = false;
+                var count = 0;
                 for (var i = 0; i < lookup.length; i++) {
                     if (vk.search(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])'), "i") >= 0) {
-                        matched = true;
-                        console.log(vk);
+                        count++;
                         break;
                     }
                 }
-                if (matched) {
-                    console.log("displaying...");
+                if (count == lookup.length) {
+                    total++;
                     var h = replaceHeader(vk);
                     $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
                     var v = value.Value;
@@ -278,7 +279,9 @@
                 }
 
             });
-
+            if (total == 0) {
+                $("div#result").append("No matched message found. Please try another combination.")
+            }
         }
 
         $(document).ready(function () {
