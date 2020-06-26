@@ -158,14 +158,14 @@
             ["快乐家协会", "HHA"],
             ["信件", "Mail"],
             ["小动物", "NNpc"],
-            ["悠闲", "BO"],
-            ["运动", "HA"],
-            ["普通", "FU"],
-            ["元气", "GE"],
-            ["成熟", "OT"],
-            ["暴躁", "KO"],
-            ["大姐姐", "AN"],
-            ["自恋", "ZK"],
+            ["悠闲", "BO", "Bo"],
+            ["运动", "HA", "Ha"],
+            ["普通", "FU", "Fu"],
+            ["元气", "GE", "Ge"],
+            ["成熟", "OT", "Ot"],
+            ["暴躁", "KO", "Ko"],
+            ["大姐姐", "AN", "An"],
+            ["自恋", "ZK", "Zk"],
             ["回礼物1", "RND_MsgA", "RND_MsgB"],
             ["回信", "RND_MsgC"],
             ["赠送DIY", "RND_MsgD"],
@@ -176,12 +176,15 @@
             ["听说其他玩家……", "RumorOP"],
             ["听说主玩家……", "RumorP"],
             ["反应", "React"],
-            ["打招呼", "Greet"],
+            ["打招呼", "Greet", "GreetV", "Greeting"],
             ["地点", "Spot"],
             ["对话", "Conv"],
             ["主动接近", "Approach", "ApproachA", "ApproachB", "ApproachC", "ApproachD", "ApproachE", "ApproachF"],
             ["被蛰", "Beeface"],
-            ["生日", "BirthDay", "Birthday", "BirthdayDemo", "BirthdayMessage", "BirthDayN", "BirthdayN", "BirthDayP", "BirthdayP"]
+            ["生日", "BirthDay", "Birthday", "BirthdayDemo", "BirthdayMessage", "BirthDayN", "BirthdayN", "BirthDayP", "BirthdayP"],
+            ["捉虫、鱼", "CatchFishInsect"],
+            ["送货", "Delivery"],
+            ["自由话题", "Free", "FreeA","FreeB","FreeC","FreeD","FreeE","FreeF","FreeG","FreeH","FreeI"]
         ];
         var flattenedCheckBox = [];
         var keyedCheckBox = {};
@@ -433,6 +436,15 @@
                     w.document.documentElement.className += " fonts-loaded";
                 });
         }(this));*/
+
+        /*
+        var merged = [].concat.apply([], combinations);
+        var uniqueNames = [];
+        $.each(merged, function (i, el) {
+            if ($.inArray(el, uniqueNames) === -1 && flattenedCheckBox.indexOf(el) < 0) uniqueNames.push(el);
+        });
+        uniqueNames.join(",");
+        */
     </script>
 </body>
 
