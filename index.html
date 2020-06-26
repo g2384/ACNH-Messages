@@ -141,17 +141,7 @@
     <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>-->
     <div id='result'></div>
     <script>
-        var json_obj = [{
-            "Key": "Mail_CNzh_MAIL_Tkk_BirthdayDemo",
-            "Value": {
-                "From_AN_01": "你懂了吧？ func(110, 13, 10) ",
-                "From_AN_02": "来自交心好友 func(110, 13, 10) ",
-                "From_AN_03": "不知怎么有点害羞呀。 func(110, 13, 10) ",
-                "From_BO_01": "来自很开心的 func(110, 13, 10) ",
-                "From_BO_02": "来自每天都想对你说的 func(110, 13, 10) ",
-                "From_BO_03": "来自非常高兴的 func(110, 13, 10) "
-            }
-        }];
+        var json_obj = null;
         var combinations = [];
 
         var checkBoxes = [
@@ -184,7 +174,8 @@
             ["生日", "BirthDay", "Birthday", "BirthdayDemo", "BirthdayMessage", "BirthDayN", "BirthdayN", "BirthDayP", "BirthdayP"],
             ["捉虫、鱼", "CatchFishInsect"],
             ["送货", "Delivery"],
-            ["自由话题", "Free", "FreeA","FreeB","FreeC","FreeD","FreeE","FreeF","FreeG","FreeH","FreeI"]
+            ["自由话题", "Free", "FreeA", "FreeB", "FreeC", "FreeD", "FreeE", "FreeF", "FreeG", "FreeH", "FreeI"],
+            ["机场", "AirPort", "Airport"]
         ];
         var flattenedCheckBox = [];
         var keyedCheckBox = {};
@@ -440,7 +431,23 @@
         }(this));*/
 
         /*
-        var merged = [].concat.apply([], combinations);
+        var merged = []
+        for(var i=0;i<combinations.length;i++){
+            var skip = false;
+            for(var j=0;j<combinations[i].length;j++){
+                var c = combinations[i][j];
+                if(flattenedCheckBox.indexOf(c) >= 0)
+                {
+                    skip = true;
+
+                }
+            }
+            if(!skip)
+            {
+                for(var j=0;j<combinations[i].length;j++)
+                    merged.push(combinations[i][j]);
+            }
+        }
         var uniqueNames = [];
         $.each(merged, function (i, el) {
             if ($.inArray(el, uniqueNames) === -1 && flattenedCheckBox.indexOf(el) < 0) uniqueNames.push(el);
