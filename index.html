@@ -91,8 +91,7 @@
         }
 
         .btn:hover {
-            background-color: #eee;
-            border: 1px solid #eee;
+            border: 1px solid #000;
             color: #555;
         }
 
@@ -142,12 +141,23 @@
     <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>-->
     <div id='result'></div>
     <script>
-        var json_obj = null;
+        var json_obj = [{
+            "Key": "Mail_CNzh_MAIL_Tkk_BirthdayDemo",
+            "Value": {
+                "From_AN_01": "你懂了吧？ func(110, 13, 10) ",
+                "From_AN_02": "来自交心好友 func(110, 13, 10) ",
+                "From_AN_03": "不知怎么有点害羞呀。 func(110, 13, 10) ",
+                "From_BO_01": "来自很开心的 func(110, 13, 10) ",
+                "From_BO_02": "来自每天都想对你说的 func(110, 13, 10) ",
+                "From_BO_03": "来自非常高兴的 func(110, 13, 10) "
+            }
+        }];
         var combinations = [];
 
         var checkBoxes = [
             ["快乐家协会", "HHA"],
-            ["小动物信件", "Mail_NNpc"],
+            ["信件", "Mail"],
+            ["小动物", "NNpc"],
             ["悠闲", "BO"],
             ["运动", "HA"],
             ["普通", "FU"],
@@ -156,22 +166,31 @@
             ["暴躁", "KO"],
             ["大姐姐", "AN"],
             ["自恋", "ZK"],
-            ["回礼物1", "RND_MsgA"],
-            ["回礼物2", "RND_MsgB"],
+            ["回礼物1", "RND_MsgA", "RND_MsgB"],
             ["回信", "RND_MsgC"],
             ["赠送DIY", "RND_MsgD"],
             ["博物馆", "Museum"],
             ["露营地", "Camp"],
             ["任务", "Quest"],
-            ["听说……(1)", "RumorN1"],
-            ["听说……(2)", "RumorN2"],
+            ["听说……", "RumorN1", "RumorN2"],
             ["听说其他玩家……", "RumorOP"],
             ["听说主玩家……", "RumorP"],
             ["反应", "React"],
             ["打招呼", "Greet"],
             ["地点", "Spot"],
-            ["对话", "Conv"]
+            ["对话", "Conv"],
+            ["主动接近", "Approach", "ApproachA", "ApproachB", "ApproachC", "ApproachD", "ApproachE", "ApproachF"],
+            ["被蛰", "Beeface"],
+            ["生日", "BirthDay", "Birthday", "BirthdayDemo", "BirthdayMessage", "BirthDayN", "BirthdayN", "BirthDayP", "BirthdayP"]
         ];
+        var flattenedCheckBox = [];
+        var keyedCheckBox = {};
+        $.each(checkBoxes, function (i, v) {
+            for (var j = 1; j < v.length; j++) {
+                flattenedCheckBox.push(v[j]);
+                keyedCheckBox[v[j]] = v[1];
+            }
+        });
         function displayControls() {
             $("div#controls").empty();
             $("div#controls").append("Select message categories:<br>")
@@ -189,9 +208,11 @@
         function filter() {
             var lookup = getLookUp();
             $.each(checkBoxes, function (i, value) {
-                if (lookup.indexOf(value[1]) < 0) {
-                    $('input[name="' + value[1] + '"]').attr("disabled", true);
-                    $('div#div_' + value[1]).addClass("disabled").removeClass("btn");
+                for (var j = 0; j < lookup.length; j++) {
+                    if (lookup[j].indexOf(value[1]) < 0) {
+                        $('input[name="' + value[1] + '"]').attr("disabled", true);
+                        $('div#div_' + value[1]).addClass("disabled").removeClass("btn");
+                    }
                 }
             });
             if (lookup.length == 0) {
@@ -204,27 +225,39 @@
             $.each(combinations, function (index, value) {
                 var matched = true;
                 for (var i = 0; i < lookup.length; i++) {
-                    if (value.indexOf(lookup[i]) < 0) {
+                    if (!containsAny(value, lookup[i])) {
                         matched = false;
                         break;
                     }
                 }
                 if (matched) {
                     for (var i = 0; i < value.length; i++) {
-                        if (rest.indexOf(value[i]) < 0) {
+                        if (flattenedCheckBox.indexOf(value[i]) >= 0 && rest.indexOf(value[i]) < 0) {
                             rest.push(value[i]);
                         }
                     }
                 }
             });
             $.each(rest, function (i, value) {
-                if (lookup.indexOf(value) < 0) {
-                    $('input[name="' + value + '"]').removeAttr("disabled");
-                    $('div#div_' + value).removeClass("disabled").addClass("btn");
+                v = keyedCheckBox[value];
+                if (lookup.indexOf(v) < 0) {
+                    $('input[name="' + v + '"]').removeAttr("disabled");
+                    $('div#div_' + v).removeClass("disabled").addClass("btn");
                 }
             });
         }
         displayControls();
+
+        function containsAny(arr, targetArr) {
+            for (var i = 0; i < arr.length; i++) {
+                for (var j = 0; j < targetArr.length; j++) {
+                    if (arr[i] == targetArr[j]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         function convertToJson(content) {
             var decompressed = LZString.decompressFromBase64(content);
@@ -311,7 +344,11 @@
             var lookup = [];
             $.each(checkBoxes, function (index, value) {
                 if ($('input[name="' + value[1] + '"]').is(':checked')) {
-                    lookup.push(value[1]);
+                    var l = [];
+                    for (var i = 1; i < value.length; i++) {
+                        l.push(value[i]);
+                    }
+                    lookup.push(l);
                 }
             });
             return lookup;
@@ -327,8 +364,11 @@
                 var matched = false;
                 var count = 0;
                 for (var i = 0; i < lookup.length; i++) {
-                    if (vk.search(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])'), "i") >= 0) {
-                        count++;
+                    for (var j = 0; j < lookup[i].length; j++) {
+                        if (vk.search(new RegExp('(?<![A-Za-z0-9])' + lookup[i][j] + '(?![A-Za-z0-9])'), "i") >= 0) {
+                            count++;
+                            break;
+                        }
                     }
                 }
                 if (count == lookup.length && added.indexOf(vk) < 0) {
