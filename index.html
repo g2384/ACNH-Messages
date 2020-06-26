@@ -256,7 +256,7 @@
         function parseJson() {
             var lookup = [];
             $.each(checkBoxes, function (index, value) {
-                if ($('input[name="' + value[1] + '"]:checked')) {
+                if ($('input[name="' + value[1] + '"]').is(':checked')) {
                     lookup.push(value[1]);
                 }
             });
