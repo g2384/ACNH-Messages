@@ -113,12 +113,12 @@
     <script>
         var p = LZString.decompress("12");
         console.log(p);
-        $.get("./msg/CNzh/all.lz").success(function (data) {
+        $.get("./msg/CNzh/all.lz", function (data) {
             convertToJson(data);
         });
 
         function convertToJson(content) {
-            var decompressed = LZString.decompress(content);
+            var decompressed = LZString.decompressFromBase64(content);
             var obj = JSON.parse(decompressed);
             parseJson(obj);
         }
@@ -128,7 +128,7 @@
             $.getJSON("./msg/CNzh/" + file + ".json", function (obj) { parseJson(obj); });
         }
 
-        function parseJson() {
+        function parseJson(obj) {
             $.each(obj, function (key, value) {
                 var vk = value.Key;
                 var h = vk.replace("CNzh_", "")
