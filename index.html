@@ -259,7 +259,7 @@
 
             var total = 0;
             $.each(json_obj, function (key, value) {
-                var vk = value.Key;
+                var vk = value.Key.replace("CNzh_", "");
                 var matched = false;
                 var count = 0;
                 for (var i = 0; i < lookup.length; i++) {
