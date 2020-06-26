@@ -85,6 +85,9 @@
 </head>
 
 <body>
+    <div id="controls">
+        Loading Data...
+    </div>
     <button onclick="load('LayoutMsg');">Layout</button>
     <button onclick="load('Mail_NNpc');">Villager Mail</button>
     <button onclick="load('Mail_Rnd_Msg');">Random Mail</button>
@@ -111,16 +114,42 @@
     <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>
     <div id='result'></div>
     <script>
+        var json_obj = null;
         var p = LZString.decompress("12");
         console.log(p);
         $.get("./msg/CNzh/all.lz", function (data) {
+            displayControls();
             convertToJson(data);
         });
+        var checkBoxes = [
+            ["快乐家协会", "HHA"]
+            ["悠闲", "BO"],
+            ["运动", "HA"],
+            ["普通", "FU"],
+            ["元气", "GE"],
+            ["成熟", "OT"],
+            ["暴躁", "KO"],
+            ["大姐姐", "AN"],
+            ["自恋", "ZK"],
+            ["回礼物1", "RND_MsgA"],
+            ["回礼物2", "RND_MsgB"],
+            ["回信", "RND_MsgC"],
+            ["赠送DIY", "RND_MsgD"],
+            ["博物馆", "Museum"],
+            ["地点", "Spot"],
+            ["对话", "Conv"]
+        ];
+        function displayControls() {
+            $("div#controls").empty();
+
+            $.each(checkBoxes, function (index, value) {
+                $("div#controls").append('<input type="checkbox" name="' + value[1] + '"><label for="' + value[1] + '">' + value[0] + '</label><br>')
+            });
+        }
 
         function convertToJson(content) {
             var decompressed = LZString.decompressFromBase64(content);
-            var obj = JSON.parse(decompressed);
-            parseJson(obj);
+            json_obj = JSON.parse(decompressed);
         }
 
         function load(file) {
@@ -128,9 +157,31 @@
             $.getJSON("./msg/CNzh/" + file + ".json", function (obj) { parseJson(obj); });
         }
 
-        function parseJson(obj) {
-            $.each(obj, function (key, value) {
+        String.prototype.regexIndexOf = function (regex, startpos) {
+            var indexOf = this.substring(startpos || 0).search(regex);
+            return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+        }
+
+        function parseJson() {
+            var lookup = [];
+            $.each(checkBoxes, function (index, value) {
+                if ($('input[name="' + value[1] + '"]:checked')) {
+                    lookup.push(value[1]);
+                }
+            });
+
+            $.each(json_obj, function (key, value) {
                 var vk = value.Key;
+                var matched = false;
+                for (var i = 0; i < lookup.length; i++) {
+                    if (vk.regexIndexOf(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])')) >= 0) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if (!matched) {
+                    continue;
+                }
                 var h = vk.replace("CNzh_", "")
                     .replace("HHA", "快乐家协会>")
                     .replace("TalkNNpc_", "村民>")
