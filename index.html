@@ -85,17 +85,21 @@
             color: rgb(0, 119, 255);
         }
 
-        .cb {
-            margin: 5px 5px;
-            border-radius: 5px;
+        .btn {
             background-color: #ffffff;
             border: 1px solid #888;
         }
 
-        .cb:hover {
+        .btn:hover {
             background-color: #eee;
             border: 1px solid #eee;
             color: #555;
+        }
+
+        .cb {
+            margin: 5px 5px;
+            border-radius: 5px;
+            border: 1px solid #888;
         }
 
         input[type="checkbox"] {
@@ -105,6 +109,11 @@
         label {
             cursor: pointer;
             padding: 8px 8px 8px 0px;
+        }
+
+        .disabled {
+            background-color: #eee;
+            color: #aaa;
         }
     </style>
 </head>
@@ -134,6 +143,7 @@
     <div id='result'></div>
     <script>
         var json_obj = null;
+        var combinations = [];
 
         var checkBoxes = [
             ["快乐家协会", "HHA"],
@@ -166,15 +176,63 @@
             $("div#controls").empty();
             $("div#controls").append("Select message categories:<br>")
             $.each(checkBoxes, function (index, value) {
-                var h = '<div class="ib cb"><input type="checkbox" name="' + value[1] + '" id="' + value[1] + '"><label for="' + value[1] + '">' + value[0] + '</label></div>';
+                var h = '<div class="ib cb btn" id="div_' + value[1] + '"><input type="checkbox" name="' + value[1] + '" id="' + value[1] + '"><label for="' + value[1] + '">' + value[0] + '</label></div>';
                 $("div#controls").append(h);
             });
             $("div#controls").append('<br><button onclick="parseJson();">Display</button>');
         }
 
+        $(document).on('change', 'input[type=checkbox]', function () {
+            filter();
+        });
+
+        function filter() {
+            var lookup = getLookUp();
+            $.each(checkBoxes, function (i, value) {
+                if (lookup.indexOf(value[1]) < 0) {
+                    $('input[name="' + value[1] + '"]').attr("disabled", true);
+                    $('div#div_' + value[1]).addClass("disabled").removeClass("btn");
+                }
+            });
+            if (lookup.length == 0) {
+                $.each(checkBoxes, function (i, value) {
+                    $('input[name="' + value[1] + '"]').removeAttr("disabled");
+                    $('div#div_' + value[1]).removeClass("disabled").addClass("btn");
+                });
+            }
+            var rest = [];
+            $.each(combinations, function (index, value) {
+                var matched = true;
+                for (var i = 0; i < lookup.length; i++) {
+                    if (value.indexOf(lookup[i]) < 0) {
+                        matched = false;
+                        break;
+                    }
+                }
+                if (matched) {
+                    for (var i = 0; i < value.length; i++) {
+                        if (rest.indexOf(value[i]) < 0) {
+                            rest.push(value[i]);
+                        }
+                    }
+                }
+            });
+            $.each(rest, function (i, value) {
+                if (lookup.indexOf(value) < 0) {
+                    $('input[name="' + value + '"]').removeAttr("disabled");
+                    $('div#div_' + value).removeClass("disabled").addClass("btn");
+                }
+            });
+        }
+        displayControls();
+
         function convertToJson(content) {
             var decompressed = LZString.decompressFromBase64(content);
             json_obj = JSON.parse(decompressed);
+            $.each(json_obj, function (key, value) {
+                var k = value.Key.split("_");
+                combinations.push(k);
+            })
         }
 
         function replaceHeader(v) {
@@ -226,8 +284,7 @@
                 .replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
                 .replace("func(110, 6, 92, 48)", "口头禅")
                 .replace("func(110, 5, 92, 48)", "口头禅")
-                .replace("func(110, 32, 92, 48)", "岛名")
-                .replace("func(110, 34, 92, 48)", "岛名")
+                .replace(/func\(110, 3[2-4], 92, 48\)/g, "岛名")
                 .replace("func(110, 1)", "玩家名")
                 .replace("func(110, 1, 92, 48)", "玩家名")
                 .replace(/func\(110, 3(, 92, 48)?\)/g, "玩家昵称")
@@ -238,6 +295,7 @@
                 .replace("func(110, 13, 10, 92, 48)", "小动物名<span class='unsure'>?</span>")
                 .replace("func(140, 12, 2, 52480)", "兴趣、职业")
                 .replace("func(115, 1, 2, 52480)", "其他玩家/村民名")
+                .replace("func(115, 92, 48, 2, 52480)", "其他玩家名")
                 .replace(/func\(92, 48, 4, 92, 48\)/g, "……<span class='unsure'>?</span>")
                 .replace("func(125, 92, 48, 2, 92, 48)", "物品")
                 .replace(/func\(135, 7, 2, 52480\)/g, "物品")
@@ -249,15 +307,19 @@
                 .replace(/\r\n/g, '<br>') + "</div></li>"
         }
 
-        function parseJson() {
-            $("div#result").empty();
+        function getLookUp() {
             var lookup = [];
             $.each(checkBoxes, function (index, value) {
                 if ($('input[name="' + value[1] + '"]').is(':checked')) {
                     lookup.push(value[1]);
                 }
             });
+            return lookup;
+        }
 
+        function parseJson() {
+            $("div#result").empty();
+            var lookup = getLookUp();
             var total = 0;
             var added = [];
             $.each(json_obj, function (key, value) {
