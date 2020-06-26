@@ -262,10 +262,12 @@
                 for (var i = 0; i < lookup.length; i++) {
                     if (vk.search(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])'), "i") >= 0) {
                         matched = true;
+                        console.log(vk);
                         break;
                     }
                 }
                 if (matched) {
+                    console.log("displaying...");
                     var h = replaceHeader(vk);
                     $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
                     var v = value.Value;
