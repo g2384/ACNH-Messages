@@ -176,11 +176,6 @@
             $.getJSON("./msg/CNzh/" + file + ".json", function (obj) { parseJson(obj); });
         }
 
-        String.prototype.regexIndexOf = function (regex, startpos) {
-            var indexOf = this.substring(startpos || 0).search(regex);
-            return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
-        }
-
         function replaceHeader(v) {
             return v.replace("CNzh_", "")
                 .replace("HHA", "快乐家协会>")
@@ -265,7 +260,7 @@
                 var vk = value.Key;
                 var matched = false;
                 for (var i = 0; i < lookup.length; i++) {
-                    if (vk.regexIndexOf(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])'), "i") >= 0) {
+                    if (vk.search(new RegExp('(?<![A-Za-z0-9])' + lookup[i] + '(?![A-Za-z0-9])'), "i") >= 0) {
                         matched = true;
                         break;
                     }
