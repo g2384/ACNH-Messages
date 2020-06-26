@@ -81,6 +81,28 @@
         .color1 {
             color: rgb(0, 119, 255);
         }
+
+        .cb {
+            margin: 5px 5px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            border: 1px solid #888;
+        }
+
+        .cb:hover {
+            background-color: #eee;
+            border: 1px solid #eee;
+            color: #555;
+        }
+
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 8px 8px 8px 0px;
+        }
     </style>
 </head>
 
@@ -88,8 +110,7 @@
     <div id="controls">
         Loading Data...
     </div>
-    <button onclick="load('LayoutMsg');">Layout</button>
-    <button onclick="load('Mail_NNpc');">Villager Mail</button>
+    <!--<button onclick="load('LayoutMsg');">Layout</button>
     <button onclick="load('Mail_Rnd_Msg');">Random Mail</button>
     <button onclick="load('Mail_Special');">NPC Mail</button>
     <button onclick="load('others');">Others</button>
@@ -105,19 +126,15 @@
     <button onclick="load('TalkNNpc_Event');">Villager On Event Day</button>
     <button onclick="load('TalkNNpc_Force');">Villager Force</button>
     <button onclick="load('TalkNNpc_Free');">Villager Free</button>
-    <button onclick="load('TalkNNpc_Greet');">Villager Greet</button>
     <button onclick="load('TalkNNpc_Other');">Villager Other</button>
-    <button onclick="load('TalkNNpc_Quest');">Villager Quest</button>
-    <button onclick="load('TalkNNpc_React');">Villager React</button>
-    <button onclick="load('TalkNNpc_Rumor');">Villager Rumor</button>
-    <button onclick="load('TalkNNpc_Museum');">Villagers in Museum</button>
-    <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>
+    <button onclick="load('TalkNNpc_Spot');">Villager In Other Places</button>-->
     <div id='result'></div>
     <script>
         var json_obj = null;
 
         var checkBoxes = [
-            ["快乐家协会", "HHA"]
+            ["快乐家协会", "HHA"],
+            ["小动物信件", "Mail_NNpc"],
             ["悠闲", "BO"],
             ["运动", "HA"],
             ["普通", "FU"],
@@ -131,15 +148,22 @@
             ["回信", "RND_MsgC"],
             ["赠送DIY", "RND_MsgD"],
             ["博物馆", "Museum"],
+            ["露营地", "Camp"],
+            ["任务", "Quest"],
+            ["听说……", "Rumor"],
+            ["反应", "React"],
+            ["打招呼", "Greet"],
             ["地点", "Spot"],
             ["对话", "Conv"]
         ];
         function displayControls() {
             $("div#controls").empty();
-
+            $("div#controls").append("Select message categories:<br>")
             $.each(checkBoxes, function (index, value) {
-                $("div#controls").append('<input type="checkbox" name="' + value[1] + '"><label for="' + value[1] + '">' + value[0] + '</label><br>')
+                var h = '<div class="ib cb"><input type="checkbox" name="' + value[1] + '" id="' + value[1] + '"><label for="' + value[1] + '">' + value[0] + '</label></div>';
+                $("div#controls").append(h);
             });
+            $("div#controls").append('<br><button onclick="parseJson();">Display</button>');
         }
 
         function convertToJson(content) {
@@ -155,6 +179,78 @@
         String.prototype.regexIndexOf = function (regex, startpos) {
             var indexOf = this.substring(startpos || 0).search(regex);
             return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+        }
+
+        function replaceHeader(v) {
+            return v.replace("CNzh_", "")
+                .replace("HHA", "快乐家协会>")
+                .replace("TalkNNpc_", "村民>")
+                .replace("BO_", "悠闲>")
+                .replace("HA_", "运动>")
+                .replace("FU_", "普通>")
+                .replace("GE_", "元气>")
+                .replace("OT_", "成熟>")
+                .replace("KO_", "暴躁>")
+                .replace("AN_", "大姐姐>")
+                .replace("ZK_", "自恋>")
+                .replace("BO", "悠闲>")
+                .replace("HA", "运动>")
+                .replace("FU", "普通>")
+                .replace("GE", "元气>")
+                .replace("OT", "成熟>")
+                .replace("KO", "暴躁>")
+                .replace("AN", "大姐姐>")
+                .replace("ZK", "自恋>")
+                .replace("Bo_", "悠闲>")
+                .replace("Ha_", "运动>")
+                .replace("Fu_", "普通>")
+                .replace("Ge_", "元气>")
+                .replace("Ot_", "成熟>")
+                .replace("Ko_", "暴躁>")
+                .replace("An_", "大姐姐>")
+                .replace("Zk_", "自恋>")
+                .replace("RND_MsgA_", "回礼物1>")
+                .replace("RND_MsgB_", "回礼物2>")
+                .replace("RND_MsgC_", "回信>")
+                .replace("RND_MsgD_", "赠送DIY>")
+                .replace("Spot_Museum_", "博物馆>")
+                .replace("Spot_", "地点>")
+                .replace("Conv_", "对话>");
+        }
+
+        function replaceMessage(v) {
+            v.replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/g, "")
+                .replace(/func\(13, 10, 92, 48, 2, \d+\)/g, "")
+                .replace(/func\(20, 3, 2, \d+\)/, "")
+                .replace(/func\(40, [\d ,]+\)/g, "")
+                .replace(/func\(110, 31, 2, 52481\)\s+func\(110, 13, 10, 92, 48\)/g, "<span class='func'>村民名<span class='unsure'>小动物</span></span>")
+                .replace(/func\(110, 92, 48, 92, 48\)/g, "<br>")
+                .replace(/func\(92, 48, 3, 2, 1\)/g, "<span class='ib color1'>")
+                .replace(/func\(92, 48, 3, 2, 65535\)/g, "</span>")
+                .replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
+                .replace("func(110, 6, 92, 48)", "口头禅")
+                .replace("func(110, 5, 92, 48)", "口头禅")
+                .replace("func(110, 32, 92, 48)", "岛名")
+                .replace("func(110, 34, 92, 48)", "岛名")
+                .replace("func(110, 1)", "玩家名")
+                .replace("func(110, 1, 92, 48)", "玩家名")
+                .replace(/func\(110, 3(, 92, 48)?\)/g, "玩家昵称")
+                .replace(/func\(110, 4(, 92, 48)?\)/g, "玩家昵称<span class='unsure'>?</span>")
+                .replace("func(110, 13, 10)", "村民名")
+                .replace("func(110, 10)", "村民名<span class='unsure'>?</span>")
+                .replace("func(110, 10, 92, 48)", "村民名<span class='unsure'>?</span>")
+                .replace("func(110, 13, 10, 92, 48)", "村民名<span class='unsure'>小动物</span>")
+                .replace("func(140, 12, 2, 52480)", "兴趣、职业")
+                .replace("func(115, 1, 2, 52480)", "其他玩家/村民名")
+                .replace(/func\(92, 48, 4, 92, 48\)/g, "……<span class='unsure'>?</span>")
+                .replace("func(125, 92, 48, 2, 92, 48)", "物品")
+                .replace(/func\(135, 7, 2, 52480\)/g, "物品")
+                .replace("func(90, 21, 2, 1)", "铃钱")
+                .replace("func(90, 21, 2, 2)", "铃钱")
+                .replace("func(90, 21, 2, 4)", "铃钱")
+                .replace("func(90, 21, 2, 92, 48)", "铃钱")
+                .replace("func(90, 27, 92, 48)", "年份")
+                .replace(/\r\n/g, '<br>') + "</div></li>"
         }
 
         function parseJson() {
@@ -174,81 +270,16 @@
                         break;
                     }
                 }
-                if (!matched) {
-                    continue;
+                if (matched) {
+                    var h = replaceHeader(vk);
+                    $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
+                    var v = value.Value;
+                    for (var k in v) {
+                        $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" +
+                            replaceMessage(v[k]));
+                    }
                 }
-                var h = vk.replace("CNzh_", "")
-                    .replace("HHA", "快乐家协会>")
-                    .replace("TalkNNpc_", "村民>")
-                    .replace("BO_", "悠闲>")
-                    .replace("HA_", "运动>")
-                    .replace("FU_", "普通>")
-                    .replace("GE_", "元气>")
-                    .replace("OT_", "成熟>")
-                    .replace("KO_", "暴躁>")
-                    .replace("AN_", "大姐姐>")
-                    .replace("ZK_", "自恋>")
-                    .replace("BO", "悠闲>")
-                    .replace("HA", "运动>")
-                    .replace("FU", "普通>")
-                    .replace("GE", "元气>")
-                    .replace("OT", "成熟>")
-                    .replace("KO", "暴躁>")
-                    .replace("AN", "大姐姐>")
-                    .replace("ZK", "自恋>")
-                    .replace("Bo_", "悠闲>")
-                    .replace("Ha_", "运动>")
-                    .replace("Fu_", "普通>")
-                    .replace("Ge_", "元气>")
-                    .replace("Ot_", "成熟>")
-                    .replace("Ko_", "暴躁>")
-                    .replace("An_", "大姐姐>")
-                    .replace("Zk_", "自恋>")
-                    .replace("RND_MsgA_", "回礼物1>")
-                    .replace("RND_MsgB_", "回礼物2>")
-                    .replace("RND_MsgC_", "回信>")
-                    .replace("RND_MsgD_", "赠送DIY>")
-                    .replace("Spot_Museum_", "博物馆>")
-                    .replace("Spot_", "地点>")
-                    .replace("Conv_", "对话>");
-                $("div#result").append("<div class='header'>" + h + "</div><ul id='" + vk + "'></ul></div>");
-                var v = value.Value;
-                for (var k in v) {
-                    $("ul#" + vk).append("<li><span class='n'>" + k + "</span><div class='msg'>" +
-                        v[k]
-                            .replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/g, "")
-                            .replace(/func\(13, 10, 92, 48, 2, \d+\)/g, "")
-                            .replace(/func\(20, 3, 2, \d+\)/, "")
-                            .replace(/func\(40, [\d ,]+\)/g, "")
-                            .replace(/func\(110, 31, 2, 52481\)\s+func\(110, 13, 10, 92, 48\)/g, "<span class='func'>村民名<span class='unsure'>小动物</span></span>")
-                            .replace(/func\(110, 92, 48, 92, 48\)/g, "<br>")
-                            .replace(/func\(92, 48, 3, 2, 1\)/g, "<span class='ib color1'>")
-                            .replace(/func\(92, 48, 3, 2, 65535\)/g, "</span>")
-                            .replace(/(func\([\d, ]+\))/g, "<span class='func'>$1</span>")
-                            .replace("func(110, 6, 92, 48)", "口头禅")
-                            .replace("func(110, 5, 92, 48)", "口头禅")
-                            .replace("func(110, 32, 92, 48)", "岛名")
-                            .replace("func(110, 34, 92, 48)", "岛名")
-                            .replace("func(110, 1)", "玩家名")
-                            .replace("func(110, 1, 92, 48)", "玩家名")
-                            .replace(/func\(110, 3(, 92, 48)?\)/g, "玩家昵称")
-                            .replace(/func\(110, 4(, 92, 48)?\)/g, "玩家昵称<span class='unsure'>?</span>")
-                            .replace("func(110, 13, 10)", "村民名")
-                            .replace("func(110, 10)", "村民名<span class='unsure'>?</span>")
-                            .replace("func(110, 10, 92, 48)", "村民名<span class='unsure'>?</span>")
-                            .replace("func(110, 13, 10, 92, 48)", "村民名<span class='unsure'>小动物</span>")
-                            .replace("func(140, 12, 2, 52480)", "兴趣、职业")
-                            .replace("func(115, 1, 2, 52480)", "其他玩家/村民名")
-                            .replace(/func\(92, 48, 4, 92, 48\)/g, "……<span class='unsure'>?</span>")
-                            .replace("func(125, 92, 48, 2, 92, 48)", "物品")
-                            .replace(/func\(135, 7, 2, 52480\)/g, "物品")
-                            .replace("func(90, 21, 2, 1)", "铃钱")
-                            .replace("func(90, 21, 2, 2)", "铃钱")
-                            .replace("func(90, 21, 2, 4)", "铃钱")
-                            .replace("func(90, 21, 2, 92, 48)", "铃钱")
-                            .replace("func(90, 27, 92, 48)", "年份")
-                            .replace(/\r\n/g, '<br>') + "</div></li>");
-                }
+
             });
 
         }
