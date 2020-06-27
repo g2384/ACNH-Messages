@@ -180,7 +180,10 @@
             ["西施惠", "sza"],
             ["猫头鹰", "owl"],
             ["巴猎岛", "spn"],
-            ["描述虫、鱼", "Comment"],
+            ["描述", "Comment"],
+            ["昆虫", "Insect"],
+            ["鱼", "Fish"],
+            ["化石", "Fossil"]
         ];
         var flattenedCheckBox = [];
         var keyedCheckBox = {};
@@ -306,7 +309,7 @@
 
         function replaceMessage(v) {
             return v.replace(/func\(13, 10(, 92, 48)?, [1-3](, 92, 48)?(, 40)?\)/g, "")
-                .replace(/func\(13, 10, 92, 48, 2, \d+\)/g, "")
+                .replace(/func\(13, 10, 92, 48, 2(, \d+)+\)/g, "")
                 .replace(/func\(20, 3, 2, \d+\)/, "")
                 .replace(/func\(40, [\d ,]+\)/g, "")
                 .replace(/func\(110, 31, 2, 52481\)\s+func\(110, 13, 10, 92, 48\)/g, "<span class='func'>村民名<span class='unsure'>小动物</span></span>")
